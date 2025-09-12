@@ -1,8 +1,7 @@
 import { openai } from '@ai-sdk/openai';
-import { AISpan, AISpanType } from '@mastra/core/ai-tracing';
+import { AISpanType } from '@mastra/core/ai-tracing';
 import { MastraLLMV1 } from '@mastra/core/llm/model';
 import { createTool } from '@mastra/core/tools';
-import { LanguageModel } from 'ai';
 import { z } from 'zod';
 
 export const cookingTool = createTool({
@@ -16,7 +15,7 @@ export const cookingTool = createTool({
     console.log('tracingContext.currentSpan', tracingContext?.currentSpan);
     const newSpan = tracingContext?.currentSpan?.createChildSpan({
       type: AISpanType.GENERIC,
-      name: 'booya',
+      name: 'inner_span',
       input: 'input',
     });
     console.log('My cooking tool is running!', context.ingredient);
@@ -35,7 +34,7 @@ export const ian_tool = createTool({
   id: 'ian-tool',
   description: 'Fix Wrap Model',
   inputSchema: z.object({}),
-  execute: async ({ mastra, runtimeContext, tracingContext }) => {
+  execute: async ({ mastra, runtimeContext }) => {
     const agent = mastra?.getAgent('chefAgentResponses');
     const llm = (await agent?.getLLM({
       runtimeContext,
@@ -48,8 +47,6 @@ export const ian_tool = createTool({
         ingredient: z.string(),
         amount: z.string(),
       }),
-      runtimeContext,
-      agentAISpan: tracingContext.currentSpan as AISpan<AISpanType.AGENT_RUN>, // if i comment this line, it works fine
     });
     return result.object;
   },

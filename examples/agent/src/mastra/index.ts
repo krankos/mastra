@@ -1,6 +1,5 @@
 import { Mastra } from '@mastra/core';
 import { PinoLogger } from '@mastra/loggers';
-import { LibSQLStore } from '@mastra/libsql';
 import { InMemoryStore } from '@mastra/core/storage';
 
 import { agentThatHarassesYou, chefAgent, chefAgentResponses, dynamicAgent, evalAgent } from './agents/index';
@@ -10,11 +9,8 @@ import { chefModelV2Agent } from './agents/model-v2-agent';
 import { createScorer } from '@mastra/core/scores';
 import { LangfuseExporter } from '@mastra/langfuse';
 import { BraintrustExporter } from '@mastra/braintrust';
+import { OpenTelemetryExporter } from '@mastra/opentelemetry';
 import { DefaultExporter } from '@mastra/core/ai-tracing';
-
-const storage = new LibSQLStore({
-  url: 'file:./mastra.db',
-});
 
 const testScorer = createScorer({
   name: 'scorer1',
@@ -22,6 +18,9 @@ const testScorer = createScorer({
 }).generateScore(() => {
   return 1;
 });
+
+// pnpm install --ignore-workspace
+// ../../packages/cli/dist/index.js dev
 
 export const mastra = new Mastra({
   agents: {
@@ -54,13 +53,11 @@ export const mastra = new Mastra({
     testScorer,
   },
   observability: {
-    default: {
-      enabled: true,
-    },
     configs: {
-      langfuse: {
-        serviceName: 'service',
+      multi: {
+        serviceName: 'test-service',
         exporters: [
+          new DefaultExporter(),
           new LangfuseExporter({
             publicKey: process.env.LANGFUSE_PUBLIC_KEY,
             secretKey: process.env.LANGFUSE_SECRET_KEY,
@@ -70,11 +67,51 @@ export const mastra = new Mastra({
           new BraintrustExporter({
             apiKey: process.env.BRAINTRUST_API_KEY,
           }),
+          new OpenTelemetryExporter({
+            provider: {
+              dash0: {
+                apiKey: process.env.DASH0_API_KEY, // Required at runtime
+                endpoint: 'ingress.us-west-2.aws.dash0.com:4317',
+              },
+            },
+          }),
+          new OpenTelemetryExporter({
+            provider: {
+              signoz: {
+                apiKey: process.env.SIGNOZ_API_KEY, // Required at runtime
+              },
+            },
+          }),
+          new OpenTelemetryExporter({
+            provider: {
+              newrelic: {
+                apiKey: process.env.NEW_RELIC_LICENSE_KEY, // Required at runtime
+              },
+            },
+          }),
+          new OpenTelemetryExporter({
+            provider: {
+              traceloop: {
+                apiKey: process.env.TRACELOOP_API_KEY, // Required at runtime
+              },
+            },
+          }),
+          new OpenTelemetryExporter({
+            provider: {
+              laminar: {
+                apiKey: process.env.LMNR_PROJECT_API_KEY, // Required at runtime
+              },
+            },
+          }),
+          // new OpenTelemetryExporter({
+          //   provider: {
+          //     langsmith: {
+          //       apiKey: process.env.LANGSMITH_API_KEY, // Required at runtime
+          //     }
+          //   },
+          // }),
         ],
       },
     },
   },
-  // telemetry: {
-  //   enabled: false,
-  // }
 });
