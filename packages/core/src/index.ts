@@ -5,6 +5,7 @@ export * from './storage/index.warning';
 export * from './eval';
 export * from './integration/index.warning';
 export * from './llm';
+export * from './logger';
 export * from './mastra';
 export * from './memory/index.warning';
 export * from './relevance';

@@ -1,7 +1,7 @@
 import { trace, context, SpanStatusCode, SpanKind, propagation } from '@opentelemetry/api';
 import type { Span } from '@opentelemetry/api';
 
-import { hasActiveTelemetry, getBaggageValues } from './utility';
+import { hasActiveTelemetry, getBaggageValues } from './utility.js';
 
 // Type interfaces for better type safety
 interface StreamFinishData {

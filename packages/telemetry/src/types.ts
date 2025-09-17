@@ -1,3 +1,5 @@
+import type { SpanExporter, ReadableSpan } from '@opentelemetry/sdk-trace-base';
+
 /** Sampling strategy configuration for OpenTelemetry */
 export type SamplingStrategy =
   | {
@@ -60,7 +62,7 @@ export type OtelConfig = {
     | {
         type: 'custom';
         tracerName?: string;
-        exporter: any; // Will be SpanExporter when @mastra/telemetry is installed
+        exporter: SpanExporter;
       };
 };
 
@@ -70,11 +72,11 @@ export type Trace = {
   name: string;
   traceId: string;
   scope: string;
-  kind: number; // SpanKind enum value
-  attributes: Record<string, any>;
-  status: { code: number; message?: string };
-  events: Array<{ name: string; attributes?: Record<string, any>; time: number[] }>;
-  links: Array<{ context: { traceId: string; spanId: string }; attributes?: Record<string, any> }>;
+  kind: ReadableSpan['kind'];
+  attributes: ReadableSpan['attributes'];
+  status: ReadableSpan['status'];
+  events: ReadableSpan['events'];
+  links: ReadableSpan['links'];
   other: Record<string, any>;
   startTime: number;
   endTime: number;

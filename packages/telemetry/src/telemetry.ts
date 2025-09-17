@@ -1,14 +1,9 @@
 import { context as otlpContext, SpanStatusCode, trace, propagation, context } from '@opentelemetry/api';
 import type { Tracer, SpanOptions, Context, Span, BaggageEntry } from '@opentelemetry/api';
 
-import { MastraError, ErrorDomain, ErrorCategory } from '../error';
-import type { OtelConfig } from './types';
-import { getBaggageValues, hasActiveTelemetry } from './utility';
+import type { OtelConfig } from './types.js';
+import { getBaggageValues, hasActiveTelemetry } from './utility.js';
 
-// Add type declaration for global namespace
-declare global {
-  var __TELEMETRY__: Telemetry | undefined;
-}
 
 export class Telemetry {
   public tracer: Tracer = trace.getTracer('default');
@@ -31,24 +26,12 @@ export class Telemetry {
    * @returns Telemetry instance that can be used for tracing
    */
   static init(config: OtelConfig = {}): Telemetry {
-    try {
-      if (!globalThis.__TELEMETRY__) {
-        globalThis.__TELEMETRY__ = new Telemetry(config);
-      }
-
-      return globalThis.__TELEMETRY__;
-    } catch (error) {
-      const wrappedError = new MastraError(
-        {
-          id: 'TELEMETRY_INIT_FAILED',
-          text: 'Failed to initialize telemetry',
-          domain: ErrorDomain.MASTRA_TELEMETRY,
-          category: ErrorCategory.SYSTEM,
-        },
-        error,
-      );
-      throw wrappedError;
+    const g = globalThis as any;
+    if (!g.__TELEMETRY__) {
+      g.__TELEMETRY__ = new Telemetry(config);
     }
+
+    return g.__TELEMETRY__;
   }
 
   static getActiveSpan() {
@@ -62,15 +45,11 @@ export class Telemetry {
    * @returns {Telemetry} The global telemetry instance
    */
   static get(): Telemetry {
-    if (!globalThis.__TELEMETRY__) {
-      throw new MastraError({
-        id: 'TELEMETRY_GETTER_FAILED_GLOBAL_TELEMETRY_NOT_INITIALIZED',
-        text: 'Telemetry not initialized',
-        domain: ErrorDomain.MASTRA_TELEMETRY,
-        category: ErrorCategory.USER,
-      });
+    const g = globalThis as any;
+    if (!g.__TELEMETRY__) {
+      throw new Error('Telemetry not initialized. Call Telemetry.init() first.');
     }
-    return globalThis.__TELEMETRY__;
+    return g.__TELEMETRY__;
   }
 
   /**

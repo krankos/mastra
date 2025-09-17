@@ -43,7 +43,7 @@ export interface SpanOptions {
   kind?: SpanKind;
   attributes?: Record<string, any>;
   links?: Link[];
-  startTime?: number;
+  startTime?: number | Date;
   root?: boolean;
 }
 

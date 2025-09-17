@@ -1,10 +1,10 @@
-import type { IMastraLogger } from '@mastra/core/logger';
+import type { IMastraLogger } from '@mastra/core';
 import { ExportResultCode } from '@opentelemetry/core';
 import type { ExportResult } from '@opentelemetry/core';
 import { JsonTraceSerializer } from '@opentelemetry/otlp-transformer';
 import type { ReadableSpan, SpanExporter } from '@opentelemetry/sdk-trace-base';
 
-import { fetchWithRetry } from '../utils/fetchWithRetry';
+import { fetchWithRetry } from '../utils/fetchWithRetry.js';
 
 export type MastraCloudExporterOptions = {
   accessToken?: string;
@@ -12,7 +12,7 @@ export type MastraCloudExporterOptions = {
   logger?: IMastraLogger;
 };
 
-class MastraCloudExporter implements SpanExporter {
+export class CloudTelemetryExporter implements SpanExporter {
   private queue: { data: any[]; resultCallback: (result: ExportResult) => void }[] = [];
   private serializer: typeof JsonTraceSerializer;
   private activeFlush: Promise<void> | undefined = undefined;
@@ -118,4 +118,5 @@ class MastraCloudExporter implements SpanExporter {
   }
 }
 
-export { MastraCloudExporter };
+// Export with old name for compatibility
+export { CloudTelemetryExporter as MastraCloudExporter };

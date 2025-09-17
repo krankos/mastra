@@ -1,118 +1,142 @@
 /**
  * Context wrapper module - provides OpenTelemetry-compatible API using abstraction layer
- * This module acts as a bridge for existing code that uses OpenTelemetry directly
+ * This module provides a compatibility layer for code that expects OpenTelemetry APIs
+ * When @mastra/telemetry is not installed, it provides no-op implementations
  */
 
-import {
-  context as otlpContext,
-  trace as otlpTrace,
-  type Span as OtelSpan,
-  type Context as OtelContext,
-} from '@opentelemetry/api';
-import type { ISpan, IContext } from './interfaces';
-import { OtelSpanAdapter, OtelContextAdapter } from './adapters/otel-adapter';
+import type { ISpan, IContext, ITracer } from './interfaces.js';
+import { NoOpSpan, NoOpContext } from './no-op.js';
+
+// Type definitions for backward compatibility
+export type Span = ISpan;
+export type Context = IContext;
+export type Tracer = ITracer;
+export type Attributes = Record<string, any>;
+export type AttributeValue = string | number | boolean | undefined | null | Array<string | number | boolean>;
+export type SpanContext = {
+  traceId: string;
+  spanId: string;
+  traceFlags?: number;
+  traceState?: unknown;
+};
+export type SpanOptions = {
+  kind?: number;
+  attributes?: Attributes;
+  links?: Array<{ context: SpanContext; attributes?: Attributes }>;
+  startTime?: Date | number;
+  root?: boolean;
+};
+export type SpanStatus = {
+  code: number;
+  message?: string;
+};
+export type TimeInput = Date | number;
+export type Exception = Error | string;
+
+// Global context storage for no-op implementation
+let activeContext: IContext = new NoOpContext();
+let activeSpan: ISpan | undefined;
 
 /**
  * Wrapper for OpenTelemetry context API
- * Provides backward compatibility while using abstraction layer
+ * Provides no-op implementation when telemetry is not available
  */
 export const context = {
   /**
    * Get the active context
    */
-  active(): OtelContext {
-    return otlpContext.active();
+  active(): Context {
+    return activeContext;
   },
 
   /**
    * Run a function with a specific context
    */
-  with<T>(ctx: OtelContext, fn: () => T): T {
-    return otlpContext.with(ctx, fn);
+  with<T>(ctx: Context, fn: () => T): T {
+    const prevContext = activeContext;
+    activeContext = ctx;
+    try {
+      return fn();
+    } finally {
+      activeContext = prevContext;
+    }
   },
 
   /**
    * Run an async function with a specific context
    */
-  async withAsync<T>(ctx: OtelContext, fn: () => Promise<T>): Promise<T> {
-    return otlpContext.with(ctx, fn);
+  async withAsync<T>(ctx: Context, fn: () => Promise<T>): Promise<T> {
+    const prevContext = activeContext;
+    activeContext = ctx;
+    try {
+      return await fn();
+    } finally {
+      activeContext = prevContext;
+    }
   },
 };
 
 /**
  * Wrapper for OpenTelemetry trace API
- * Provides backward compatibility while using abstraction layer
+ * Provides no-op implementation when telemetry is not available
  */
 export const trace = {
   /**
    * Get a tracer
    */
   getTracer(name: string): any {
-    return otlpTrace.getTracer(name);
+    // Return a no-op tracer
+    return {
+      startSpan: () => new NoOpSpan(),
+      startActiveSpan: <T>(name: string, fn: (span: ISpan) => T) => {
+        const span = new NoOpSpan();
+        return fn(span);
+      }
+    };
   },
 
   /**
    * Get the active span
    */
-  getActiveSpan(): OtelSpan | undefined {
-    return otlpTrace.getActiveSpan();
+  getActiveSpan(): Span | undefined {
+    return activeSpan;
   },
 
   /**
    * Set a span in context
    */
-  setSpan(ctx: OtelContext, span: OtelSpan): OtelContext {
-    return otlpTrace.setSpan(ctx, span);
+  setSpan(ctx: Context, span: Span): Context {
+    activeSpan = span;
+    return ctx;
   },
 
   /**
    * Get a span from context
    */
-  getSpan(ctx: OtelContext): OtelSpan | undefined {
-    return otlpTrace.getSpan(ctx);
+  getSpan(ctx: Context): Span | undefined {
+    return activeSpan;
   },
 
   /**
    * Set span attributes on the current span
    */
   setSpanAttributes(attributes: Record<string, any>): void {
-    const span = otlpTrace.getActiveSpan();
-    if (span) {
-      span.setAttributes(attributes);
+    if (activeSpan) {
+      activeSpan.setAttributes(attributes);
     }
   },
 };
 
-// Re-export types for backward compatibility
-export type {
-  Span,
-  Context,
-  Tracer,
-  Attributes,
-  AttributeValue,
-  SpanContext,
-  SpanOptions,
-  SpanStatus,
-  TimeInput,
-  Exception,
-} from '@opentelemetry/api';
-
 /**
- * Helper function to convert ISpan to OtelSpan if needed
+ * Helper function for compatibility
  */
-export function toOtelSpan(span: ISpan | OtelSpan): OtelSpan {
-  if (span instanceof OtelSpanAdapter) {
-    return span.getOtelSpan();
-  }
-  return span as OtelSpan;
+export function toOtelSpan(span: ISpan): ISpan {
+  return span;
 }
 
 /**
- * Helper function to convert IContext to OtelContext if needed
+ * Helper function for compatibility
  */
-export function toOtelContext(ctx: IContext | OtelContext): OtelContext {
-  if (ctx instanceof OtelContextAdapter) {
-    return ctx.getOtelContext();
-  }
-  return ctx as OtelContext;
+export function toOtelContext(ctx: IContext): IContext {
+  return ctx;
 }

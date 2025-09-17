@@ -48,14 +48,14 @@ export class MastraBase {
     return this.telemetry;
   }
 
-  /* 
+  /*
     get experimental_telemetry config
     */
   get experimental_telemetry() {
     return this.telemetry
       ? {
           // tracer: this.telemetry.tracer,
-          tracer: this.telemetry.getBaggageTracer(),
+          tracer: this.telemetry.getBaggageTracer?.() || this.telemetry.tracer,
           isEnabled: !!this.telemetry.tracer,
         }
       : undefined;
