@@ -29,7 +29,8 @@ import type {
   ExecutionEngineOptions,
 } from '@mastra/core/workflows';
 import { EMITTER_SYMBOL, STREAM_FORMAT_SYMBOL } from '@mastra/core/workflows/_constants';
-import type { Span } from '@opentelemetry/api';
+// Using abstracted telemetry from @mastra/core instead of direct OpenTelemetry
+import type { Span } from '@mastra/core';
 import type { Inngest, BaseContext, InngestFunction } from 'inngest';
 import { serve as inngestServe } from 'inngest/hono';
 import { z } from 'zod';

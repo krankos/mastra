@@ -1,7 +1,8 @@
 import type { ReadableStream } from 'stream/web';
 import { TransformStream } from 'stream/web';
 import type { SharedV2ProviderMetadata, LanguageModelV2CallWarning } from '@ai-sdk/provider-v5';
-import type { Span } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import type { Span } from '../../telemetry/context-wrapper';
 import { consumeStream } from 'ai-v5';
 import type { FinishReason, TelemetrySettings } from 'ai-v5';
 import { TripWire } from '../../agent';

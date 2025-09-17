@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
-import type { Span } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import type { Span } from '../telemetry/context-wrapper';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { RuntimeContext } from '../di';

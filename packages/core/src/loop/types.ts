@@ -1,5 +1,6 @@
 import type { LanguageModelV2, SharedV2ProviderOptions } from '@ai-sdk/provider-v5';
-import type { Span } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import type { Span } from '../telemetry/context-wrapper';
 import type {
   CallSettings,
   IdGenerator,

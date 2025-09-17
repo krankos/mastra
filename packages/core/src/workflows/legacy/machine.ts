@@ -1,5 +1,6 @@
 import EventEmitter from 'node:events';
-import type { Span } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import type { Span } from '../../telemetry/context-wrapper';
 import { get } from 'radash';
 import sift from 'sift';
 import type { MachineContext, Snapshot } from 'xstate';

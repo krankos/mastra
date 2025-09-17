@@ -1,5 +1,5 @@
-import type { Attributes, Tracer } from '@opentelemetry/api';
-import { trace } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import { trace, type Attributes, type Tracer } from '../../telemetry/context-wrapper';
 import type { CallSettings, TelemetrySettings } from 'ai-v5';
 import { noopTracer } from './noop';
 

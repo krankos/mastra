@@ -1,4 +1,5 @@
-import type { Span, SpanContext, Tracer } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import type { Span, SpanContext, Tracer } from '../../telemetry/context-wrapper';
 
 const noopSpanContext: SpanContext = {
   traceId: '',

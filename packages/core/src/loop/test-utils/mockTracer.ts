@@ -1,3 +1,4 @@
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
 import type {
   AttributeValue,
   Attributes,
@@ -9,7 +10,7 @@ import type {
   SpanStatus,
   TimeInput,
   Tracer,
-} from '@opentelemetry/api';
+} from '../../telemetry/context-wrapper';
 
 export class MockTracer implements Tracer {
   spans: MockSpan[] = [];
@@ -135,7 +136,7 @@ class MockSpan implements Span {
         'exception.message': error.message || '',
         'exception.stack': error.stack || '',
       },
-      time: Array.isArray(time) ? time : [0, 0],
+      time: Array.isArray(time) ? (time as [number, number]) : [0, 0],
     });
   }
 }

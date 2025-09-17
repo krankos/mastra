@@ -71,7 +71,7 @@ The following 13 OpenTelemetry packages are currently direct dependencies of `@m
 
 #### 1.1 Define Core Interfaces
 
-Create `packages/core/src/telemetry/interface.ts`:
+Create `packages/core/src/telemetry/interfaces.ts`:
 
 ```typescript
 // Core telemetry interfaces that remain in @mastra/core
@@ -202,6 +202,7 @@ packages/telemetry/
 │   │       ├── utility.ts
 │   │       └── exporters/
 │   │           ├── storage-exporter.ts
+│   │           ├── cloud-exporter.ts  // Moved from @mastra/cloud
 │   │           └── composite-exporter.ts
 │   ├── types.ts
 │   └── otel-vendor.ts
@@ -239,7 +240,16 @@ packages/telemetry/
 }
 ```
 
-#### 3.3 Update Core Package
+#### 3.3 Consolidate Telemetry Exporters
+
+**Note**: When creating the @mastra/telemetry package, consolidate all telemetry exporters:
+
+- Move the cloud telemetry exporter from `@mastra/cloud/src/telemetry/` to `@mastra/telemetry/src/exporters/cloud-exporter.ts`
+- Keep the storage exporter from `@mastra/core/src/telemetry/storage-exporter.ts`
+- This consolidation keeps all telemetry concerns together in one package
+- Both exporters will be available as optional features of the telemetry package
+
+#### 3.4 Update Core Package
 
 Update `@mastra/core` to use the extracted package:
 

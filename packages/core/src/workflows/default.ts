@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
-import { context as otlpContext, trace } from '@opentelemetry/api';
-import type { Span } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import { context as otlpContext, trace, type Span } from '../telemetry/context-wrapper';
 import type { AISpan, TracingContext } from '../ai-tracing';
 import { AISpanType, wrapMastra, selectFields } from '../ai-tracing';
 import type { RuntimeContext } from '../di';

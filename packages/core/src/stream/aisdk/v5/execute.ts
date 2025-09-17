@@ -1,7 +1,8 @@
 import { isAbortError } from '@ai-sdk/provider-utils';
 import { injectJsonInstructionIntoMessages } from '@ai-sdk/provider-utils-v5';
 import type { LanguageModelV2, LanguageModelV2Prompt, SharedV2ProviderOptions } from '@ai-sdk/provider-v5';
-import type { Span } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import type { Span } from '../../../telemetry/context-wrapper';
 import type { CallSettings, TelemetrySettings, ToolChoice, ToolSet } from 'ai-v5';
 import { getResponseFormat } from '../../base/schema';
 import type { OutputSchema } from '../../base/schema';

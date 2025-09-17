@@ -1,5 +1,5 @@
-import type { Span } from '@opentelemetry/api';
-import { context as otlpContext, trace } from '@opentelemetry/api';
+// Using abstracted telemetry context wrapper instead of direct OpenTelemetry
+import { context as otlpContext, trace, type Span } from '../../telemetry/context-wrapper';
 import { z } from 'zod';
 import type { MastraPrimitives } from '../../action';
 import type { Agent } from '../../agent';
