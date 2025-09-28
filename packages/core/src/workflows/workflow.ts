@@ -1085,7 +1085,7 @@ export class Workflow<
     }
 
     const res = isResume
-      ? await run.resume({ resumeData, step: resume.steps as any, runtimeContext, tracingContext })
+      ? await run.resume({ resumeData, step: resume.steps as any, runtimeContext })
       : await run.start({ inputData, runtimeContext, tracingContext, writableStream: writer });
     unwatch();
     unwatchV2();
@@ -1821,7 +1821,6 @@ export class Run<
     step,
     resumeData,
     runtimeContext,
-    tracingContext,
     format,
   }: {
     resumeData?: z.input<TInput>;
@@ -1831,7 +1830,6 @@ export class Run<
       | string
       | string[];
     runtimeContext?: RuntimeContext;
-    tracingContext?: TracingContext;
     format?: 'aisdk' | 'mastra' | undefined;
   } = {}) {
     this.closeStreamAction = async () => {};
@@ -1900,7 +1898,6 @@ export class Run<
           resumeData,
           step,
           runtimeContext,
-          tracingContext,
           writableStream: writable,
           format,
           isVNext: true,
@@ -1996,8 +1993,6 @@ export class Run<
       | string[];
     runtimeContext?: RuntimeContext;
     runCount?: number;
-    tracingContext?: TracingContext;
-    tracingOptions?: TracingOptions;
     writableStream?: WritableStream<ChunkType>;
   }): Promise<WorkflowResult<TInput, TOutput, TSteps>> {
     return this._resume(params);
@@ -2012,8 +2007,6 @@ export class Run<
       | string[];
     runtimeContext?: RuntimeContext;
     runCount?: number;
-    tracingContext?: TracingContext;
-    tracingOptions?: TracingOptions;
     writableStream?: WritableStream<ChunkType>;
     format?: 'aisdk' | 'mastra' | undefined;
     isVNext?: boolean;
@@ -2097,7 +2090,7 @@ export class Run<
       params.runtimeContext.delete('__mastraWorflowInputData');
     }
 
-    const stepResults = { ...(snapshot?.context ?? {}), input: runtimeContextInput ?? snapshot?.context?.input } as any;
+    const stepResults = { ...(snapshot.context ?? {}), input: runtimeContextInput ?? snapshot.context?.input } as any;
 
     let runtimeContextToUse = params.runtimeContext ?? new RuntimeContext();
 
@@ -2107,19 +2100,10 @@ export class Run<
       }
     });
 
-    // note: this span is ended inside this.executionEngine.execute()
-    const workflowAISpan = getOrCreateSpan({
-      type: AISpanType.WORKFLOW_RUN,
-      name: `workflow run: '${this.workflowId}'`,
-      input: resumeDataToUse,
-      attributes: {
-        workflowId: this.workflowId,
-      },
-      tracingPolicy: this.tracingPolicy,
-      tracingOptions: params.tracingOptions,
-      tracingContext: params.tracingContext,
-      runtimeContext: runtimeContextToUse,
-    });
+    const workflowSpan = snapshot.workflowSpan
+
+
+
 
     const traceId = getValidTraceId(workflowAISpan);
 
