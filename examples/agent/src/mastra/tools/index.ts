@@ -11,8 +11,11 @@ export const cookingTool = createTool({
     ingredient: z.string(),
   }),
   execute: async ({ context, tracingContext }, options) => {
+<<<<<<< Updated upstream
     console.log('tracingContext', tracingContext);
     console.log('tracingContext.currentSpan', tracingContext?.currentSpan);
+=======
+>>>>>>> Stashed changes
     const newSpan = tracingContext?.currentSpan?.createChildSpan({
       type: AISpanType.GENERIC,
       name: 'inner_span',

@@ -19,7 +19,11 @@
     "@mastra/loggers": "latest",
     "@mastra/mcp": "latest",
     "@mastra/memory": "latest",
+<<<<<<< Updated upstream
     "@mastra/opentelemetry": "latest",
+=======
+    "@mastra/otel-exporter": "latest",
+>>>>>>> Stashed changes
     "@mastra/voice-openai": "latest",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.205.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.205.0",
@@ -43,7 +47,11 @@
       "@mastra/evals": "link:../../packages/evals",
       "@mastra/langfuse": "link:../../observability/langfuse",
       "@mastra/braintrust": "link:../../observability/braintrust",
+<<<<<<< Updated upstream
       "@mastra/opentelemetry": "link:../../observability/opentelemetry",
+=======
+      "@mastra/otel-exporter": "link:../../observability/otel-exporter",
+>>>>>>> Stashed changes
       "mastra": "link:../../packages/cli"
     }
   },

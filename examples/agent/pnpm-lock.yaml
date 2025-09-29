@@ -15,7 +15,11 @@ overrides:
   '@mastra/evals': link:../../packages/evals
   '@mastra/langfuse': link:../../observability/langfuse
   '@mastra/braintrust': link:../../observability/braintrust
+<<<<<<< Updated upstream
   '@mastra/opentelemetry': link:../../observability/opentelemetry
+=======
+  '@mastra/otel-exporter': link:../../observability/otel-exporter
+>>>>>>> Stashed changes
   mastra: link:../../packages/cli
 
 importers:
@@ -61,9 +65,15 @@ importers:
       '@mastra/memory':
         specifier: link:../../packages/memory
         version: link:../../packages/memory
+<<<<<<< Updated upstream
       '@mastra/opentelemetry':
         specifier: link:../../observability/opentelemetry
         version: link:../../observability/opentelemetry
+=======
+      '@mastra/otel-exporter':
+        specifier: link:../../observability/otel-exporter
+        version: link:../../observability/otel-exporter
+>>>>>>> Stashed changes
       '@mastra/voice-openai':
         specifier: link:../../voice/openai
         version: link:../../voice/openai
