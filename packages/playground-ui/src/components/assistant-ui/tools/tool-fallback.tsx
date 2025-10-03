@@ -20,7 +20,8 @@ const ToolFallbackInner: ToolCallMessagePartComponent = ({ toolName, result, arg
   // The response from the fetch request resolving the workflow might theoretically
   // be resolved after we receive the first stream event
 
-  useWorkflowStream(args.__mastraMetadata?.workflowFullState);
+  console.log('lol', result);
+  useWorkflowStream(result);
   const { data: workflow, isLoading } = useWorkflow(toolName);
 
   const isAgent = args.__mastraMetadata?.from === 'AGENT';
@@ -42,7 +43,7 @@ const ToolFallbackInner: ToolCallMessagePartComponent = ({ toolName, result, arg
       <WorkflowBadge
         workflowId={toolName}
         workflow={workflow}
-        isStreaming={args.__mastraMetadata?.isStreaming}
+        isStreaming={true}
         runId={result?.runId}
         networkMetadata={args?.__mastraMetadata?.networkMetadata}
       />
