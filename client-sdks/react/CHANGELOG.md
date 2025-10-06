@@ -1,5 +1,18 @@
 # @mastra/react-hooks
 
+## 0.0.4-alpha.1
+
+### Patch Changes
+
+- Mutable shared workflow run state ([#8545](https://github.com/mastra-ai/mastra/pull/8545))
+
+- type fixes and missing changeset ([#8545](https://github.com/mastra-ai/mastra/pull/8545))
+
+- Convert WorkflowWatchResult to WorkflowResult in workflow graph ([#8541](https://github.com/mastra-ai/mastra/pull/8541))
+
+- Updated dependencies [[`4783b30`](https://github.com/mastra-ai/mastra/commit/4783b3063efea887825514b783ba27f67912c26d)]:
+  - @mastra/client-js@0.15.1-alpha.1
+
 ## 0.0.4-alpha.0
 
 ### Patch Changes
