@@ -20,7 +20,6 @@ const ToolFallbackInner: ToolCallMessagePartComponent = ({ toolName, result, arg
   // The response from the fetch request resolving the workflow might theoretically
   // be resolved after we receive the first stream event
 
-  console.log('lol', result);
   useWorkflowStream(result);
   const { data: workflow, isLoading } = useWorkflow(toolName);
 
