@@ -15,15 +15,8 @@ import { toAssistantUIMessage, useMastraClient } from '@mastra/react';
 import { useWorkingMemory } from '@/domains/agents/context/agent-working-memory-context';
 import { MastraClient } from '@mastra/client-js';
 import { useAdapters } from '@/components/assistant-ui/hooks/use-adapters';
-import { ReadonlyJSONObject } from '@mastra/core/stream';
 
 import { handleNetworkMessageFromMemory } from './agent-network-message';
-import {
-  createRootToolAssistantMessage,
-  handleAgentChunk,
-  handleStreamChunk,
-  handleWorkflowChunk,
-} from './stream-chunk-message';
 import { ModelSettings, useChat } from '@mastra/react';
 
 const handleFinishReason = (finishReason: string) => {
